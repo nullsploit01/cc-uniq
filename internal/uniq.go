@@ -34,10 +34,6 @@ func (u *Uniq) PrintUniqueLinesFromFile(file *os.File) error {
 }
 
 func (u *Uniq) ProcessFile(file *os.File) error {
-	if _, err := file.Seek(0, 0); err != nil {
-		return err
-	}
-
 	var lastLine string
 	var lastAdjacentLine *AdjacentUniqueLine
 
