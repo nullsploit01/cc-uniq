@@ -23,7 +23,7 @@ to quickly create a Cobra application.`,
 		}
 
 		fileName := args[0]
-		u := internal.NewUniq()
+		u := internal.NewUniq(cmd)
 
 		file, err := os.Open(fileName)
 		if err != nil {

@@ -3,6 +3,8 @@ package internal
 import (
 	"bufio"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
 type AdjacentUniqueLine struct {
@@ -11,11 +13,12 @@ type AdjacentUniqueLine struct {
 }
 
 type Uniq struct {
+	cmd                 *cobra.Command
 	AdjacentUniqueLines []AdjacentUniqueLine
 }
 
-func NewUniq() *Uniq {
-	return &Uniq{}
+func NewUniq(cmd *cobra.Command) *Uniq {
+	return &Uniq{cmd: cmd}
 }
 
 func (u *Uniq) PrintUniqueLinesFromFile(file *os.File) error {
@@ -24,11 +27,7 @@ func (u *Uniq) PrintUniqueLinesFromFile(file *os.File) error {
 	}
 
 	for _, k := range u.AdjacentUniqueLines {
-		if k.Count > 1 {
-			continue
-		}
-
-		println(k.Line)
+		u.cmd.OutOrStdout().Write([]byte(k.Line + "\n"))
 	}
 
 	return nil
