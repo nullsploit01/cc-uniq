@@ -5,14 +5,17 @@ import (
 	"os"
 )
 
+type AdjacentUniqueLine struct {
+	Line  string
+	Count int
+}
+
 type Uniq struct {
-	AdjacentUniqueLines map[string]int
+	AdjacentUniqueLines []AdjacentUniqueLine
 }
 
 func NewUniq() *Uniq {
-	return &Uniq{
-		AdjacentUniqueLines: make(map[string]int),
-	}
+	return &Uniq{}
 }
 
 func (u *Uniq) PrintUniqueLinesFromFile(file *os.File) error {
@@ -20,8 +23,12 @@ func (u *Uniq) PrintUniqueLinesFromFile(file *os.File) error {
 		return err
 	}
 
-	for k := range u.AdjacentUniqueLines {
-		println(k)
+	for _, k := range u.AdjacentUniqueLines {
+		if k.Count > 1 {
+			continue
+		}
+
+		println(k.Line)
 	}
 
 	return nil
@@ -33,17 +40,21 @@ func (u *Uniq) ProcessFile(file *os.File) error {
 	}
 
 	var lastLine string
+	var lastAdjacentLine *AdjacentUniqueLine
+
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
 
 	for scanner.Scan() {
 		curr := scanner.Text()
-
-		if curr == lastLine {
-			u.AdjacentUniqueLines[curr]++
+		if lastAdjacentLine != nil && curr == lastLine {
+			lastAdjacentLine.Count++
 		} else {
-			u.AdjacentUniqueLines[curr] = 1
+			adjacentLine := AdjacentUniqueLine{Line: curr, Count: 1}
+			u.AdjacentUniqueLines = append(u.AdjacentUniqueLines, adjacentLine)
+
 			lastLine = curr
+			lastAdjacentLine = &u.AdjacentUniqueLines[len(u.AdjacentUniqueLines)-1]
 		}
 	}
 
