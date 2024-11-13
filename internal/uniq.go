@@ -3,6 +3,7 @@ package internal
 import (
 	"bufio"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -21,13 +22,25 @@ func NewUniq(cmd *cobra.Command) *Uniq {
 	return &Uniq{cmd: cmd}
 }
 
-func (u *Uniq) PrintUniqueLinesFromFile(file *os.File) error {
+func (u *Uniq) PrintUniqueLinesFromFile(file *os.File, outputFileName string) error {
 	if err := u.ProcessFile(file); err != nil {
 		return err
 	}
 
+	var outputData []string
+
 	for _, k := range u.AdjacentUniqueLines {
-		u.cmd.OutOrStdout().Write([]byte(k.Line + "\n"))
+		outputData = append(outputData, k.Line)
+	}
+
+	if outputFileName != "" {
+		data := strings.Join(outputData, "\n")
+		WriteToFile(outputFileName, data)
+		return nil
+	}
+
+	for _, data := range outputData {
+		u.cmd.OutOrStdout().Write([]byte(data + "\n"))
 	}
 
 	return nil

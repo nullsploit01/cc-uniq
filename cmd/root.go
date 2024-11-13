@@ -18,6 +18,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var inputFile *os.File
+		var outputFileName string
 
 		if len(args) < 1 {
 			cmd.Usage()
@@ -40,8 +41,12 @@ to quickly create a Cobra application.`,
 		}
 		defer inputFile.Close()
 
+		if len(args) >= 2 {
+			outputFileName = args[1]
+		}
+
 		u := internal.NewUniq(cmd)
-		if err := u.PrintUniqueLinesFromFile(inputFile); err != nil {
+		if err := u.PrintUniqueLinesFromFile(inputFile, outputFileName); err != nil {
 			cmd.ErrOrStderr().Write([]byte(err.Error()))
 			os.Exit(1)
 		}
