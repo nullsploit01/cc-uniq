@@ -8,6 +8,8 @@ import (
 )
 
 var withCount bool
+var onlyRepeated bool
+var onlyUnique bool
 
 var rootCmd = &cobra.Command{
 	Use:   "cc-uniq",
@@ -48,7 +50,7 @@ to quickly create a Cobra application.`,
 		}
 
 		u := internal.NewUniq(cmd)
-		if err := u.PrintUniqueLinesFromFile(inputFile, outputFileName, withCount); err != nil {
+		if err := u.PrintUniqueLinesFromFile(inputFile, outputFileName, withCount, onlyRepeated, onlyUnique); err != nil {
 			cmd.ErrOrStderr().Write([]byte(err.Error()))
 			os.Exit(1)
 		}
@@ -64,4 +66,6 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().BoolVarP(&withCount, "count", "c", false, "Count of number of lines")
+	rootCmd.Flags().BoolVarP(&onlyRepeated, "repeated", "d", false, "Print only repeated lines")
+	rootCmd.Flags().BoolVarP(&onlyUnique, "unique", "u", false, "Print only unique lines")
 }

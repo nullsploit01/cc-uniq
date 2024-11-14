@@ -23,7 +23,7 @@ func NewUniq(cmd *cobra.Command) *Uniq {
 	return &Uniq{cmd: cmd}
 }
 
-func (u *Uniq) PrintUniqueLinesFromFile(file *os.File, outputFileName string, withCount bool) error {
+func (u *Uniq) PrintUniqueLinesFromFile(file *os.File, outputFileName string, withCount, onlyRepeated, onlyUnique bool) error {
 	if err := u.ProcessFile(file); err != nil {
 		return err
 	}
@@ -31,6 +31,15 @@ func (u *Uniq) PrintUniqueLinesFromFile(file *os.File, outputFileName string, wi
 	var outputData []string
 
 	for i, k := range u.AdjacentUniqueLines {
+
+		if onlyRepeated && k.Count == 1 {
+			continue
+		}
+
+		if onlyUnique && k.Count > 1 {
+			continue
+		}
+
 		dataToAppend := k.Line
 
 		if withCount {
