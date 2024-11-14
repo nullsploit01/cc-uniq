@@ -2,6 +2,7 @@ package internal
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 
@@ -22,15 +23,21 @@ func NewUniq(cmd *cobra.Command) *Uniq {
 	return &Uniq{cmd: cmd}
 }
 
-func (u *Uniq) PrintUniqueLinesFromFile(file *os.File, outputFileName string) error {
+func (u *Uniq) PrintUniqueLinesFromFile(file *os.File, outputFileName string, withCount bool) error {
 	if err := u.ProcessFile(file); err != nil {
 		return err
 	}
 
 	var outputData []string
 
-	for _, k := range u.AdjacentUniqueLines {
-		outputData = append(outputData, k.Line)
+	for i, k := range u.AdjacentUniqueLines {
+		dataToAppend := k.Line
+
+		if withCount {
+			dataToAppend = fmt.Sprint(u.AdjacentUniqueLines[i].Count) + " " + dataToAppend
+		}
+
+		outputData = append(outputData, dataToAppend)
 	}
 
 	if outputFileName != "" {

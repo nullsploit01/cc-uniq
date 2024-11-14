@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var withCount bool
+
 var rootCmd = &cobra.Command{
 	Use:   "cc-uniq",
 	Short: "A brief description of your application",
@@ -46,7 +48,7 @@ to quickly create a Cobra application.`,
 		}
 
 		u := internal.NewUniq(cmd)
-		if err := u.PrintUniqueLinesFromFile(inputFile, outputFileName); err != nil {
+		if err := u.PrintUniqueLinesFromFile(inputFile, outputFileName, withCount); err != nil {
 			cmd.ErrOrStderr().Write([]byte(err.Error()))
 			os.Exit(1)
 		}
@@ -61,5 +63,5 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Flags().BoolVarP(&withCount, "count", "c", false, "Count of number of lines")
 }
