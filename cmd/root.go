@@ -12,14 +12,35 @@ var onlyRepeated bool
 var onlyUnique bool
 
 var rootCmd = &cobra.Command{
-	Use:   "cc-uniq",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Use:   "ccuniq [flags] [file]",
+	Short: "Filter and process duplicate lines from input.",
+	Long: `CC-Uniq is a command-line utility that enhances the functionality of traditional Unix 'uniq' by supporting direct output to a file. It reads input, processes duplicate lines, and outputs the results either to standard output or directly to a specified output file.
+CC-Uniq can handle input from files or standard input streams, and it offers various options for managing duplicate lines:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Examples of using ccuniq:
+  # Directly invoke ccuniq on a file, outputting to standard output
+  ccuniq test.txt
+
+  # Use ccuniq after a cat command, taking input from a pipe
+  cat test.txt | ccuniq -
+
+  # Direct output to a file using ccuniq's built-in output feature
+  cat test.txt | ccuniq - out.txt
+
+  # Count occurrences of each line and direct the output to a file
+  ccuniq -c test.txt out.txt
+
+  # Display only duplicate lines, outputting to a file
+  ccuniq -d test.txt out.txt
+
+  # Display only unique lines, directing the output to a specific file
+  ccuniq -u test.txt out.txt
+
+CC-Uniq supports several flags to customize its behavior:
+  -c, --count        Count occurrences of each line and print them alongside the lines.
+  -d, --repeated     Output only lines that appear more than once.
+  -u, --unique       Output lines that appear exactly once.`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 		var inputFile *os.File
 		var outputFileName string
